@@ -50,7 +50,6 @@ export default {
       } = await this.$http.get('api/girds')
       if (status !== 0) return message
       this.gridList = message
-      console.log(message)
     }
   }
 }
