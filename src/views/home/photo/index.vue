@@ -1,41 +1,60 @@
 <template>
   <div class="photo">
-    <van-tabs sticky>
-      <van-tab v-for="photo in list" :key="photo.id" :title="photo.title" style="box-sizing: none"></van-tab>
+    <van-tabs @change="getImage">
+      <van-tab v-for="(photo,index) in list" :key="index" :title="photo.title">
+        <template v-if="images.length!==0" >
+          <router-link v-for="(img,index) in images" :key="index" class="show" tag="div" :to="'/home/photoinfo/'+img.id">
+            <img v-lazy="img.img_url" />
+          </router-link>
+        </template>
+        <div v-else class="noimage">当前无图片加载</div>
+      </van-tab>
     </van-tabs>
-    <router-view></router-view>
   </div>
 </template>
-
 <script>
 export default {
   data: () => ({
-    list: null
+    list: [],
+    images: []
   }),
   methods: {
-    async getImage () {
+    async getImageList () {
       const {
         data: { message, status }
       } = await this.$http.get('api/getimgcategory')
       if (status !== 0) return console.log(message)
+      message.unshift({ id: 0, title: '全部' })
       this.list = message
+    },
+    async getImage (index) {
+      const {
+        data: { message, status }
+      } = await this.$http.get(`api/getimages/${index}`)
+      if (status !== 0) return console.log(message)
+      this.images = message
     }
   },
   created () {
-    this.getImage()
+    this.getImageList()
+    this.getImage(0)
   },
-  mounted () {
-    console.log(document.getElementsByClassName('van-tab'))
-    let items = document.querySelectorAll('.van-tab')
-    items.forEach((el) => {
-      console.log(el)
-    })
-  }
+  mounted () {}
 }
 </script>
 
 <style lang='less' scoped>
-.van-tab {
-  box-sizing: content-box;
+.photo {
+  .noimage {
+    text-align: center;
+    color: red;
+    padding: 20px;
+  }
+  .show {
+    padding: 4px;
+    img {
+      width: 100%;
+    }
+  }
 }
 </style>

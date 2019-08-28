@@ -12,6 +12,10 @@ import Photo from '@/views/home/photo'
 import Goods from '@/views/home/goods'
 
 import NewOne from '@/views/home/news/new'
+
+import Photoinfo from '@/views/home/photo/photoinfo'
+
+import Goodinfo from '@/views/home/goods/goodinfo'
 // 2,注册 router
 Vue.use(Router)
 // 4.实例化 路由对象
@@ -64,6 +68,16 @@ export default new Router({
     path: '/home/newone/:newid',
     name: 'newone',
     component: NewOne
+  },
+  {
+    path: '/home/photoinfo/:imgid',
+    name: 'photoinfo',
+    component: Photoinfo
+  },
+  {
+    path: '/home/goodinfo/:id',
+    name: 'goodinfo',
+    component: Goodinfo
   }
   ]
 })

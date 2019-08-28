@@ -1,17 +1,18 @@
 <template>
-  <div id="newone">
+  <div id="photoinfo">
     <div>
-      <h1>{{obj.title}}</h1>
-      <h4>{{obj.zhaiyao}}</h4>
+      <h2>{{obj.title}}</h2>
       <li>
-        <span class="time">{{obj.add_time}}</span>
-        <span class="num">
-          阅读&nbsp;&nbsp;
-          <mark class="number">1</mark>
-        </span>
+        {{obj.add_time}}
+        <span>阅读 {{obj.click}}</span>
       </li>
-      <hr />
-      <img :src="src" alt />
+      <div class="swipe">
+        <van-swipe :autoplay="3000">
+          <van-swipe-item v-for="(image, index) in images" :key="index" @click="showImg(index)">
+            <img v-lazy="image" />
+          </van-swipe-item>
+        </van-swipe>
+      </div>
       <p>{{obj.content}}</p>
       <hr />
     </div>
@@ -22,27 +23,47 @@
 import comment from '@/components/comment'
 export default {
   data: () => ({
-    obj: {},
     id: 0,
-    src: '',
+    obj: {},
+    images: {},
+    text: '',
     commentlist: [],
     pageindex: 1,
     limit: 2,
     testcount: false
   }),
   created () {
-    this.id = this.$route.params.newid
-    this.src = `http://10.41.151.49:5000/news/images/${this.id}.jpg`
-    this.getNew()
+    this.id = this.$route.params.imgid
+    this.getImageInfo()
+    this.getThumImages()
     this.getComment()
   },
   methods: {
-    async getNew () {
+    async getImageInfo () {
       const {
         data: { message, status }
-      } = await this.$http.get(`api/getnew/${this.id}`)
+      } = await this.$http.get(`api/getimageInfo/${this.id}`)
       if (status !== 0) return console.log(message)
       this.obj = message
+    },
+    async getThumImages () {
+      const {
+        data: { message, status }
+      } = await this.$http.get(`/api/getthumimages/${this.id}`)
+      if (status !== 0) return console.log(message)
+      let arr = []
+      message.forEach(el => {
+        if (el.src) {
+          arr.push(el.src)
+        }
+      })
+      this.images = arr
+    },
+    showImg (startPosition) {
+      this.$ImagePreview({
+        images: this.images,
+        startPosition
+      })
     },
     async getComment () {
       if (this.testcount !== false) return alert('没有更多了')
@@ -78,34 +99,28 @@ export default {
 }
 </script>
 <style lang='less' scoped>
-#newone {
-  padding: 0 5px;
-  text-align: center;
-  overflow: scroll;
-  h1 {
+#photoinfo {
+  h2{
+    text-align: center;
     color: red;
   }
-  img {
-    margin-top: 10px;
-    width: 100%;
-  }
-  li {
-    padding: 0 20px;
+  li{
     list-style: none;
-    overflow: hidden;
-    .time {
-      float: left;
-    }
-    .num {
-      float: right;
-    }
-    .number {
-      background-color: #fff;
+    padding: 5px 10px;
+    span{
+      float:right;
     }
   }
-  p {
-    text-align: left;
-    margin-bottom: 15px;
+  .swipe {
+    padding: 4px;
+    img {
+      width: 100%;
+      height: 260px;
+    }
+  }
+  p{
+    text-indent: 2em;
+    padding: 5px;
   }
 }
 </style>
