@@ -15,7 +15,7 @@
       <p>{{obj.content}}</p>
       <hr />
     </div>
-    <comment :commentlist="commentlist" @postcomment="postcomment" :getMore="getMore"></comment>
+    <comment :hasFlag="hasFlag" :commentlist="commentlist" @postcomment="postcomment" :getMore="getMore"></comment>
   </div>
 </template>
 <script>
@@ -28,7 +28,7 @@ export default {
     commentlist: [],
     pageindex: 1,
     limit: 2,
-    testcount: false
+    hasFlag: false
   }),
   created () {
     this.id = this.$route.params.newid
@@ -45,16 +45,15 @@ export default {
       this.obj = message
     },
     async getComment () {
-      if (this.testcount !== false) return alert('没有更多了')
+      if (this.hasFlag !== false) return false
       const {
         data: { message, status, count }
       } = await this.$http.get(`api/getcomments/${this.id}?pageindex=${this.pageindex}&limit=${this.limit}`)
       if (status !== 0) return console.log(message)
       this.commentlist = this.commentlist.concat(message)
-      this.testcount = this.pageindex * this.limit > count
+      this.hasFlag = this.pageindex * this.limit > count
     },
     async postcomment (data) {
-      if (!this.text) return alert('请输入内容')
       const {
         data: { message, status }
       } = await this.$http.post(`api/postcomment/${this.id}`, { artid: this.id, content: data })
@@ -65,7 +64,6 @@ export default {
         content: data,
         user_name: '匿名用户'
       })
-      this.text = ''
     },
     getMore () {
       this.pageindex++

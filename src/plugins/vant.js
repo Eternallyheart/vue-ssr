@@ -12,18 +12,32 @@ import {
   Tab,
   Tabs,
   Panel,
-  Notify,
   Lazyload,
-  ImagePreview
+  ImagePreview,
+  Stepper,
+  NoticeBar,
+  Popup,
+  CouponList,
+  AddressEdit,
+  GoodsAction,
+  GoodsActionIcon,
+  GoodsActionButton,
+  Toast,
+  Switch,
+  SubmitBar,
+  RadioGroup,
+  Radio
 } from 'vant'
 const options = {
 
 }
-Vue.use(Button).use(NavBar).use(Swipe)
-  .use(SwipeItem).use(Tabbar).use(TabbarItem)
+Vue.use(Button).use(NavBar).use(Swipe).use(NoticeBar).use(Radio)
+  .use(SwipeItem).use(Tabbar).use(TabbarItem).use(RadioGroup)
   .use(Grid).use(GridItem).use(Card).use(Lazyload, options)
-  .use(Tab).use(Tabs).use(Panel)
+  .use(Tab).use(Tabs).use(Panel).use(Stepper).use(SubmitBar)
+  .use(Popup).use(CouponList).use(AddressEdit).use(Switch)
+  .use(GoodsAction).use(GoodsActionIcon).use(GoodsActionButton)
 
-Vue.prototype.$Notify = Notify
+Vue.prototype.$Toast = Toast
 
 Vue.prototype.$ImagePreview = ImagePreview

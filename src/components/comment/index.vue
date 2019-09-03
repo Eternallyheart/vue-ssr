@@ -1,7 +1,7 @@
 <template>
   <div id="comment">
     <h2>发表评论</h2>
-    <textarea class="textarea" v-model="text"></textarea>
+    <textarea class="textarea" v-model="text" ></textarea>
     <van-button plain type="danger" class="more" @click="report">发表评论</van-button>
     <van-panel
       v-for="(comment,index) in commentlist"
@@ -12,7 +12,7 @@
       <div>{{comment.content}}</div>
     </van-panel>
     <div slot="footer">
-      <van-button size="normal" type="danger" plain class="getmore" @click="getMore">加载更多</van-button>
+      <van-button size="normal" type="danger" plain class="getmore" @click="getMore">{{hasFlag?'被掏空了':'加载更多'}}</van-button>
     </div>
   </div>
 </template>
@@ -27,13 +27,18 @@ export default {
     },
     getMore: {
       type: Function
+    },
+    hasFlag: {
+      type: Boolean
     }
   },
   created () {
   },
   methods: {
     report () {
+      if (this.text.length === 0) return this.$Toast('请输入内容')
       this.$emit('postcomment', this.text)
+      this.text = ''
     }
   }
 }
